@@ -2,7 +2,6 @@
 	<view class="content" @click="onClickPage">
 		<image class="btn" src="../../static/btn_add.png"></image>
 		<text class="text">点按任意位置即可打开照片</text>
-		<image src="https://web.immers.icu/assets/olympus.svg"></image>
 	</view>
 	
 </template>

@@ -767,6 +767,20 @@ function getNextIFDOffset(dataView, dirStart, bigEnd) {
 	return dataView.getUint32(dirStart + 2 + entries * 12, !bigEnd); // each entry is 12 bytes long
 }
 
+
+var IptcFieldMap = {
+        0x78 : 'caption',
+        0x6E : 'credit',
+        0x19 : 'keywords',
+        0x37 : 'dateCreated',
+        0x50 : 'byline',
+        0x55 : 'bylineTitle',
+        0x7A : 'captionWriter',
+        0x69 : 'headline',
+        0x74 : 'copyright',
+        0x0F : 'category'
+    };
+
 function readIPTCData(file, startOffset, sectionLength){
     var dataView = new DataView(file);
     var data = {};

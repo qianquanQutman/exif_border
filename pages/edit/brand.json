@@ -1,0 +1,10 @@
+{
+	"SONY": {
+		"logoSrc": "../../static/src/sony.svg",
+		"width": "50px"
+	},
+	"Apple": {
+		"logoSrc": "../../static/src/apple.svg",
+		"width": "21px"
+	}
+}
