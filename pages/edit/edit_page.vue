@@ -5,14 +5,15 @@
 			<view class="exif_border">
 				<view class="model_info">
 					<view class="model_name">{{ inputModel ? inputModel : exif.Model }}</view>
-					<view class="model_time">{{exif.DateTimeOriginal}}</view>
+					
 				</view>
 				<view class="logo_info">
 					<image :style="{width: brandData.width}" :src="brandData.logoSrc"></image>
 					<view class="line"></view>
 					<view class="exit_info">
-						<view class="photo_exif">{{`${focalNum}mm  f/${fNumber} ${ExposureTimeStr} ISO${exif.ISOSpeedRatings}`}}</view>
-						<view class="photo_location">49.11N 116.89W</view>
+						<view class="photo_exif">{{`${focalNum}mm  f/${fNumber} ${ExposureTimeStr}s ISO${exif.ISOSpeedRatings}`}}</view>
+						<view class="model_time">{{exif.DateTimeOriginal}}</view>
+						<!-- <view class="photo_location">49.11N 116.89W</view> -->
 					</view>
 				</view>
 			</view>
@@ -53,6 +54,10 @@
 				imagePath: '',
 				title: '编辑',
 				exif: {
+					PixelXDimension: 0, //宽度
+					PixelYDimension: 0, //高度
+					ImageWidth: 0, //宽度
+					ImageHeight: 0, //高度
 					Make: '', // 品牌
 					Model: '', //型号
 					FocalLength: {
@@ -86,6 +91,13 @@
 			}
 		},
 		onLoad() { 
+			function removeTrailingZeros(str) {
+			  // 使用正则表达式去除末尾的0
+			  // 使用正则表达式去除末尾的0，并判断是否以.0结尾
+			    const result = str.replace(/(\.\d*?[1-9])0+$/, "$1");
+			    // 如果末尾是.0，则去除.0部分
+			    return result.endsWith('.0') ? result.slice(0, -2) : result;
+			};
 			const eventChannel = this.getOpenerEventChannel(); 
 			eventChannel.on('sendImage', (data) => { 
 				this.imagePath = data.imagePath; 
@@ -95,13 +107,13 @@
 					this.exif = res.exif;
 					let timeStr = '';
 					if (this.exif.ExposureTime.denominator == 1) {
-						timeStr = `${this.exif.ExposureTime.numerator}s`;
+						timeStr = `${this.exif.ExposureTime.numerator}`;
 					} else {
-						timeStr = `${this.exif.ExposureTime.numerator}/${this.exif.ExposureTime.denominator}s`;
+						timeStr = `${this.exif.ExposureTime.numerator}/${this.exif.ExposureTime.denominator}`;
 					}
 
-					this.focalNum = (this.exif.FocalLength.numerator / this.exif.FocalLength.denominator).toFixed(1).replace(/.0/g, "");
-					this.fNumber = (this.exif.FNumber.numerator / this.exif.FNumber.denominator).toFixed(2).replace(/.00/g, "");
+					this.focalNum = removeTrailingZeros((this.exif.FocalLength.numerator / this.exif.FocalLength.denominator).toFixed(1));
+					this.fNumber = removeTrailingZeros((this.exif.FNumber.numerator / this.exif.FNumber.denominator).toFixed(2));
 					
 					this.ExposureTimeStr = timeStr;
 					this.inputModel = this.exif.Model || '';
@@ -245,7 +257,8 @@
 	.model_name {
 		font-size: 12px;
 		font-family: 'PingFang-RE';
-		color: #606060;
+		color: #404040;
+		padding-bottom: 5px;
 	}
 	
 	.model_time {

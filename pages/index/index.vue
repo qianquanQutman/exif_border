@@ -25,9 +25,9 @@
 					sourceType: ['album'],
 					success: (res) => {
 						let tempFilePaths = res.tempFilePaths;
-						console.log("imgs===",tempFilePaths);
+						console.log("imgs===",res);
 						uni.navigateTo({
-							url: '/pages/edit/edit_page',
+							url: '/pages/edit/canvas_edit_page',
 							success: (res) => {
 								res.eventChannel.emit('sendImage', { imagePath: tempFilePaths[0] }); 
 							}

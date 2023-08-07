@@ -13,6 +13,12 @@
 			}
 		},
 		{
+			"path": "pages/edit/canvas_edit_page",
+			"style": {
+				"navigationBarTitleText": "编辑"
+			}
+		},
+		{
 			"path": "pages/edit/web_view",
 			"style": {
 				"navigationBarTitleText": "选择照片"
