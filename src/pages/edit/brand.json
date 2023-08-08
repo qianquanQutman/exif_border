@@ -1,39 +1,57 @@
 {
 	"SONY": {
 		"logoSrc": "../../static/src/sony.svg",
-		"width": "50px"
+		"logoPng": "../../static/png/sony.png",
+		"width": "50px",
+		"widthNum": 50
 	},
 	"Apple": {
 		"logoSrc": "../../static/src/apple.svg",
-		"width": "21px"
+		"logoPng": "../../static/png/apple.png",
+		"width": "21px",
+		"widthNum": 21
 	},
 	"Canon": {
 		"logoSrc": "../../static/src/canon.svg",
-		"width": "47px"
+		"logoPng": "../../static/png/canon.png",
+		"width": "47px",
+		"widthNum": 47
 	},
 	"Nikon": {
 		"logoSrc": "../../static/src/nikon.svg",
-		"width": "40px"
+		"logoPng": "../../static/png/nikon.png",
+		"width": "40px",
+		"widthNum": 40
 	},
 	"Hasu": {
 		"logoSrc": "../../static/src/hasu.svg",
-		"width": "21px"
+		"logoPng": "../../static/png/hasu.png",
+		"width": "21px",
+		"widthNum": 21
 	},
 	"Fujifilm": {
 		"logoSrc": "../../static/src/fujifilm.svg",
-		"width": "41px"
+		"logoPng": "../../static/png/fujifilm.png",
+		"width": "41px",
+		"widthNum": 41
 	},
 	"Pentax": {
 		"logoSrc": "../../static/src/pentax.svg",
-		"width": "42px"
+		"logoPng": "../../static/png/pentax.png",
+		"width": "42px",
+		"widthNum": 42
 	},
 	"Olympus": {
 		"logoSrc": "../../static/src/olympus.svg",
-		"width": "48px"
+		"logoPng": "../../static/png/olympus.png",
+		"width": "48px",
+		"widthNum": 48
 	},
 	"Zeiss": {
 		"logoSrc": "../../static/src/zeiss.svg",
-		"width": "16px"
+		"logoPng": "../../static/png/zeiss.png",
+		"width": "16px",
+		"widthNum": 16
 	}
 }
 

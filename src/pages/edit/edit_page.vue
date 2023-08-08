@@ -111,11 +111,12 @@
 					} else {
 						timeStr = `${this.exif.ExposureTime.numerator}/${this.exif.ExposureTime.denominator}`;
 					}
+					this.ExposureTimeStr = timeStr;
 
 					this.focalNum = removeTrailingZeros((this.exif.FocalLength.numerator / this.exif.FocalLength.denominator).toFixed(1));
 					this.fNumber = removeTrailingZeros((this.exif.FNumber.numerator / this.exif.FNumber.denominator).toFixed(2));
 					
-					this.ExposureTimeStr = timeStr;
+					
 					this.inputModel = this.exif.Model || '';
 					if (this.exif.Make) {
 						this.brandData = brands[this.exif.Make] || {};
