@@ -1,12 +1,17 @@
 <template>
-	<view class="content">
-	    <canvas canvas-id="canvas" v-if="imageWidthPX > 0" :width="imageWidthPXStr" :height="imageHeightPXStr" class="myCanvas"></canvas>
-		<image class="preview_img" :src="preview_src"></image>
-	  </view>
+		<view class="content">
+			<image class="preview_img" :src="preview_src"></image>
+			<button class="save_button" @click="onclickSave()">保存照片</button>
+			<canvas canvas-id="canvas" :style="{ width: imageWidthPXStr, height: imageHeightPXStr}"  class="myCanvas">
+				
+			</canvas>
+		</view>
+	
 </template>
 
 <script>
-	import {getImageData, getFloatLocationByExif}  from '../../static/izExif.js';
+	import { callWithAsyncErrorHandling } from "vue";
+import {getImageData, getFloatLocationByExif}  from '../../static/izExif.js';
 	export default {
 		data() {
 			return {
@@ -15,7 +20,7 @@
 				imageWidthPX: 0,
 				imageHeightPX: 0,
 				imageWidthPXStr: '0px',
-				imageWidthPXStr: '0px',
+				imageHeightPXStr: '0px',
 				preview_src: '',
 				exif: {
 					PixelXDimension: 0, //宽度
@@ -62,16 +67,38 @@
 				getImageData(this.imagePath).then(res=>{
 					// let {exif} = getFloatLocationByExif(res.exif);
 					this.exif = res.exif;
-					this.imageWidthPX = this.exif.ImageWidth || this.exif.PixelXDimension || 0;
-					this.imageHeightPX = this.exif.ImageHeight || this.exif.PixelYDimension || 0;
-					this.imageWidthPXStr = `${this.imageWidthPX}px`;
-					this.imageHeightPXStr = `${this.imageHeightPX}px`
-					console.log("开始画图");
-					this.drawImg();
+					console.log("exif===>", this.exif);
+					
+					uni.getImageInfo({
+						src: this.imagePath,
+						success: (reImg) => {
+							this.imageWidthPX = reImg.width || 0;
+							this.imageHeightPX = reImg.height || 0;
+							const scale = uni.getSystemInfoSync().devicePixelRatio;
+							this.imageWidthPXStr = `${this.imageWidthPX / scale}px`;
+							this.imageHeightPXStr = `${this.imageHeightPX / scale + 240}px`;
+							this.drawImg();
+						}
+					});
+					
+					
+
+					
 				});
 			});
 		},
 		methods: {
+			onclickSave() {
+				uni.saveImageToPhotosAlbum({
+				  filePath: this.preview_src,
+				  success: () => {
+				    uni.showToast({ title: '图片保存成功', icon: 'success' });
+				  },
+				  fail: () => {
+				    uni.showToast({ title: '图片保存失败', icon: 'none' });
+				  },
+				});
+			},
 			drawImg() {
 				
 				this.$nextTick().then(() => {
@@ -80,37 +107,36 @@
 					console.log("画图===>",imageUrl);
 					// 创建Canvas绘图上下文
 					const ctx = uni.createCanvasContext('canvas');
-					
+					// ctx.hidpi = false;
+					// 缩放画布坐标，适应高分辨率屏幕
+					const scale = uni.getSystemInfoSync().devicePixelRatio;
+					// ctx.scale(scale, scale);
+
 					// 将之前在绘图上下文中的描述（路径、变形、样式）画到 canvas 中
 					
 					// 绘制图片到Canvas
-					const imgWidth = this.imageWidthPX;
-					const imgHeight = this.imageHeightPX;
+					const imgWidth = this.imageWidthPX / scale;
+					const imgHeight = this.imageHeightPX / scale;
 					console.log("size", {imgWidth, imgHeight});
-					ctx.drawImage(this.imagePath, 0, 0, imgWidth, imgHeight)
-					
-					// 设置水印文字、字体、颜色、透明度等属性
-					var watermark = 'Bing'
-					var font = '20px Arial'
-					var color = 'red'
-					var alpha = 0.5
-					// 计算水印的位置和角度
-					var x = imgWidth - 10 // 水平偏移量，可以根据需要调整
-					var y = imgHeight - 10 // 垂直偏移量，可以根据需要调整
-					var angle = -45 // 旋转角度，可以根据需要调整
+					ctx.drawImage(this.imagePath, 0, 0, imgWidth, imgHeight);
 					// 保存当前状态
-					ctx.save()
+					ctx.save();
+					
+					ctx.setFontSize(60);
+					ctx.setFillStyle('#606060');
+					ctx.fillText(this.exif.Model, 50, imgHeight + 124);
+					ctx.save();
 
-					ctx.setFontSize(20)
-					ctx.fillText('Hello', 20, 20)
-					ctx.fillText('MINA', 100, 100)
+					ctx.fillText('MINA', 100, 100);
 					ctx.draw(true,(file) => {
 						console.log("draw=>",file);
 						uni.canvasToTempFilePath({
 						  canvasId: 'canvas',
+						  fileType: 'jpg',
+						  quality: 1.0,
 						  success: res => {
 						    // 在H5平台下，tempFilePath 为 base64
-						    console.log("canvasToTempFilePath=>",res.tempFilePath);
+						    console.log("canvasToTempFilePath=>",res);
 							// 将Canvas内容导出为图片
 							this.preview_src = res.tempFilePath;
 							
@@ -125,6 +151,7 @@
 </script>
 
 <style>
+
 	page {
 		background-color: black;
 		display: flex;
@@ -140,8 +167,11 @@
 		height: 100%;
 	}
 	.myCanvas{
-		z-index: -1;
-		position: relative;
+		/* z-index: -1;
+		position: relative; */
+		position: absolute; 
+		top: -9999px; 
+		left: -9999px
 	}
 	/* .preview {
 		display: none;
@@ -153,6 +183,7 @@
 	} */
 	.preview_img {
 		background-color: bisque;
-		object-fit: contain;
+		object-fit: cover;
+		display: f;
 	}
 </style>
